@@ -12,7 +12,7 @@ namespace Application.DTOs.Person
         public DateTime DateOfBirth { get; set; }
         public string GenderText { get; set; } = string.Empty; // "Male" or "Female"
         public string Address { get; set; } = string.Empty;
-        public int Phone { get; set; }
+        public string Phone { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public int NationalityCountryID { get; set; }
         public string? ImagePath { get; set; }

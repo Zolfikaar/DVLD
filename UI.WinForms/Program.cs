@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using Application.Services;
+using DependencyInjection;
 
 namespace UI.WinForms
 {
@@ -14,9 +12,14 @@ namespace UI.WinForms
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            System.Windows.Forms.Application.EnableVisualStyles();
+            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+
+            PersonService personService = ServiceBootstrapper.CreatePersonService();
+
+            System.Windows.Forms.Application.Run(new Form1(personService));
+
+    
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Domain.Entities
         public DateTime DateOfBirth {  get; set; }
         public byte Gender { get; set; }
         public string Address { get; set; } = string.Empty;
-        public int Phone { get; set; }
+        public string Phone { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public int NationalityCountryID;
         public string ImagePath {  get; set; } = string.Empty;

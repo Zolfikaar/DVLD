@@ -1,23 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.Data.SqlClient;
-using Domain.Interfaces;
 using System.Data;
-using Domain.Entities;
+using System.Text;
 using Dapper;
+using Domain.Entities;
+using Domain.Interfaces;
+using Infrastructure.DB;
+using Microsoft.Data.SqlClient;
+using System.Threading.Tasks;
+
+#nullable enable
 
 namespace Infrastructure.Repositories
 {
     public class PersonRepository : IPersonRepository
     {
-        private readonly string _connectionString;
-        public PersonRepository(string connectionString) 
+
+        public PersonRepository()
         {
-            _connectionString = connectionString;
+            CreateConnection();
         }
 
-        private IDbConnection CreateConnection() => new SqlConnection(_connectionString);
+
+        private SqlConnection CreateConnection()
+        {
+            return DbInitializer.Connection();
+        }
 
         public async Task<Person?> GetByPersonalIdAsync(int personId)
         {
@@ -38,8 +46,8 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<Person>> GetAllAsync()
         {
-            const string query = "SELECT * FROM People ORDER BY PersonID DESC";
-            using var connection = CreateConnection();
+            const string query = "SELECT * FROM People"; // ORDER BY PersonalId DESC
+            SqlConnection connection = CreateConnection();
             return await connection.QueryAsync<Person>(query);
         }
 
