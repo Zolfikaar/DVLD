@@ -10,6 +10,7 @@ namespace UI.WinForms.Forms
     public partial class ManagePeople : Form
     {
         private readonly PersonService _personService;
+        private int _recordCount = 0;
         public ManagePeople(PersonService personService)
         {
             InitializeComponent();
@@ -43,8 +44,10 @@ namespace UI.WinForms.Forms
                 if (dgvPeople.Rows.Count > 0)
                 {
                     _configureGridColumns();
+                    _recordCount = list.Count;
                 }
 
+                lblRecordsCount.Text = _recordCount.ToString();
                 // إجبار الشاشة على إعادة رسم العناصر فوراً
                 dgvPeople.Refresh();
                 dgvPeople.Update();
@@ -87,6 +90,24 @@ namespace UI.WinForms.Forms
         {
             if (dgvPeople.Columns.Contains(columnName))
                 dgvPeople.Columns[columnName].Visible = false;
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void btnNew_Click(object sender, EventArgs e)
+        {
+            //var frm = new FrmAddEditPerson(_personService);
+            //frm.ShowDialog();
+        }
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            //string senderObj = sender.ToString();
+            //ShowDialog(this);
+            //var frm = new FrmAddEditPerson(_personService, );
         }
     }
 }

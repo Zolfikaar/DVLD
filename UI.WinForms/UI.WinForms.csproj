@@ -171,10 +171,16 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ManagePeople.cs">
+    <Compile Include="Forms\Person\AddEdit.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ManagePeople.Designer.cs">
+    <Compile Include="Forms\Person\AddEdit.Designer.cs">
+      <DependentUpon>AddEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Person\ManagePeople.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Person\ManagePeople.Designer.cs">
       <DependentUpon>ManagePeople.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
@@ -185,7 +191,10 @@
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ManagePeople.resx">
+    <EmbeddedResource Include="Forms\Person\AddEdit.resx">
+      <DependentUpon>AddEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Person\ManagePeople.resx">
       <DependentUpon>ManagePeople.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -212,9 +221,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj">
       <Project>{32ef7bf0-4881-4622-baf9-af8fccb95d9d}</Project>
@@ -227,6 +234,15 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bin_sm.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Edit_sm.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\plus_sm.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets" Condition="Exists('..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets')" />
