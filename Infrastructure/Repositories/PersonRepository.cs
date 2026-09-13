@@ -27,13 +27,12 @@ namespace Infrastructure.Repositories
             return DbInitializer.Connection();
         }
 
-        public async Task<Person?> GetByPersonalIdAsync(int personId)
+        public async Task<Person?> GetByPersonIdAsync(int personId)
         {
-            const string query = @"SELECT FirstName, SecondName, ThirdName, LastName, DateOfBirth, Gender, Address 
-                            From People Where PersonalId = @personId";
+            const string query = "SELECT * FROM People WHERE PersonID = @personId";
 
             using var connection = CreateConnection();
-            return await connection.QueryFirstOrDefaultAsync<Person>(query, new { PersonalId = personId });
+            return await connection.QueryFirstOrDefaultAsync<Person>(query, new { personId = personId });
         }
 
         public async Task<Person?> GetByNationalNoAsync(string nationalNo)

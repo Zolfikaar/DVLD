@@ -6,7 +6,7 @@ namespace Application.DTOs.Person
 {
     public class PersonDto
     {
-        public int PersonalID { get; set; }
+        public int PersonID { get; set; }
         public string NationalNo { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; set; }
@@ -16,5 +16,9 @@ namespace Application.DTOs.Person
         public string Email { get; set; } = string.Empty;
         public int NationalityCountryID { get; set; }
         public string? ImagePath { get; set; }
+        public string FirstName { get; internal set; } = string.Empty;
+        public string SecondName { get; internal set; } = string.Empty;
+        public string ThirdName { get; internal set; } = string.Empty;
+        public string LastName { get; internal set; } = string.Empty;
     }
 }

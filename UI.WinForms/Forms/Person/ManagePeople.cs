@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Application.Services;
+using UI.WinForms.Forms.Person;
 
 
 namespace UI.WinForms.Forms
@@ -64,7 +65,7 @@ namespace UI.WinForms.Forms
             if (dgvPeople.Columns.Count == 0) return;
 
             // 1. الاسم هنا يجب أن يكون PersonalID ليطابق الـ DTO
-            _setColumnHeader("PersonalID", "Person ID");
+            _setColumnHeader("PersonID", "Person ID");
             _setColumnHeader("NationalNo", "National No");
             _setColumnHeader("FullName", "Full Name");
             _setColumnHeader("GenderText", "Gender");
@@ -99,15 +100,26 @@ namespace UI.WinForms.Forms
 
         private void btnNew_Click(object sender, EventArgs e)
         {
-            //var frm = new FrmAddEditPerson(_personService);
-            //frm.ShowDialog();
+            var frm = new AddEditForm(_personService);
+            frm.ShowDialog();
+
+            // إعادة تحميل الجدول بعد إغلاق الشاشة لتحديث البيانات
+            _ = _refreshPeopleListAsync();
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            //string senderObj = sender.ToString();
-            //ShowDialog(this);
-            //var frm = new FrmAddEditPerson(_personService, );
+            if (dgvPeople.CurrentRow == null) return;
+
+            // سحب الـ PersonalID من الصف المحدد حالياً
+            int selectedPersonId = (int)dgvPeople.CurrentRow.Cells["PersonID"].Value;
+
+            // تمرير الخدمة والـ ID للشاشة
+            var frm = new AddEditForm(_personService, selectedPersonId);
+            frm.ShowDialog();
+
+            // إعادة تحديث الجدول فور الإغلاق
+            _ = _refreshPeopleListAsync();
         }
     }
 }

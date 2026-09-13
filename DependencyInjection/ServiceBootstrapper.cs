@@ -9,8 +9,10 @@ namespace DependencyInjection
     {
         public static PersonService CreatePersonService()
         {
-            IPersonRepository repo = new PersonRepository();
-            return new PersonService(repo);
+            IPersonRepository personRepo = new PersonRepository();
+            ICountryRepository countryRepo = new CountryRepository();
+
+            return new PersonService(personRepo, countryRepo);
         }
     }
 }

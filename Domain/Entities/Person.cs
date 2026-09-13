@@ -7,7 +7,7 @@ namespace Domain.Entities
 {
     public class Person
     {
-        public int PersonalId { get; set; }
+        public int PersonId { get; set; }
         public string NationalNo { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;
         public string SecondName { get; set; } = string.Empty;

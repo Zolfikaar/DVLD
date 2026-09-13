@@ -1,6 +1,6 @@
 ﻿namespace UI.WinForms.Forms.Person
 {
-    partial class AddEdit
+    partial class AddEditForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,14 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.lblPersonID = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.pbPersonPhoto = new System.Windows.Forms.PictureBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.btnClearImage = new System.Windows.Forms.Button();
             this.btnBrowse = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.pbPersonPhoto = new System.Windows.Forms.PictureBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.cbCountry = new System.Windows.Forms.ComboBox();
             this.label15 = new System.Windows.Forms.Label();
@@ -65,11 +66,13 @@
             this.label2 = new System.Windows.Forms.Label();
             this.btnClearForm = new System.Windows.Forms.Button();
             this.btnSaveRecord = new System.Windows.Forms.Button();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbPersonPhoto)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -110,28 +113,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Person Photo";
             // 
-            // pbPersonPhoto
-            // 
-            this.pbPersonPhoto.BackgroundImage = global::UI.WinForms.Properties.Resources.icons8_person_100_1;
-            this.pbPersonPhoto.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pbPersonPhoto.Location = new System.Drawing.Point(15, 39);
-            this.pbPersonPhoto.Name = "pbPersonPhoto";
-            this.pbPersonPhoto.Size = new System.Drawing.Size(120, 120);
-            this.pbPersonPhoto.TabIndex = 0;
-            this.pbPersonPhoto.TabStop = false;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.label3.Location = new System.Drawing.Point(154, 39);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(211, 20);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "Upload a photo for the person";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // label4
             // 
             this.label4.AutoSize = true;
@@ -171,6 +152,28 @@
             this.btnBrowse.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnBrowse.UseVisualStyleBackColor = true;
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label3.Location = new System.Drawing.Point(154, 39);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(211, 20);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "Upload a photo for the person";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // pbPersonPhoto
+            // 
+            this.pbPersonPhoto.BackgroundImage = global::UI.WinForms.Properties.Resources.icons8_person_100_1;
+            this.pbPersonPhoto.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pbPersonPhoto.Location = new System.Drawing.Point(15, 39);
+            this.pbPersonPhoto.Name = "pbPersonPhoto";
+            this.pbPersonPhoto.Size = new System.Drawing.Size(120, 120);
+            this.pbPersonPhoto.TabIndex = 0;
+            this.pbPersonPhoto.TabStop = false;
+            // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.cbCountry);
@@ -200,17 +203,6 @@
             // 
             this.cbCountry.Font = new System.Drawing.Font("Myanmar Text", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbCountry.FormattingEnabled = true;
-            this.cbCountry.Items.AddRange(new object[] {
-            "Person ID",
-            "National Number",
-            "First Name",
-            "Second Name",
-            "Third Name",
-            "Last Name",
-            "Gender",
-            "Phone",
-            "Email",
-            "Nationality Country"});
             this.cbCountry.Location = new System.Drawing.Point(572, 132);
             this.cbCountry.Name = "cbCountry";
             this.cbCountry.Size = new System.Drawing.Size(157, 35);
@@ -510,6 +502,7 @@
             this.btnClearForm.Text = "Clear";
             this.btnClearForm.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnClearForm.UseVisualStyleBackColor = true;
+            this.btnClearForm.Click += new System.EventHandler(this.btnClearForm_Click);
             // 
             // btnSaveRecord
             // 
@@ -527,7 +520,11 @@
             this.btnSaveRecord.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnSaveRecord.UseVisualStyleBackColor = false;
             // 
-            // AddEdit
+            // errorProvider1
+            // 
+            this.errorProvider1.ContainerControl = this;
+            // 
+            // AddEditForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -539,8 +536,9 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.lblPersonID);
             this.Controls.Add(this.label1);
-            this.Name = "AddEdit";
+            this.Name = "AddEditForm";
             this.Text = "AddEdit";
+            this.Load += new System.EventHandler(this.AddEdit_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbPersonPhoto)).EndInit();
@@ -549,6 +547,7 @@
             this.groupBox4.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -593,5 +592,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnClearForm;
         private System.Windows.Forms.Button btnSaveRecord;
+        private System.Windows.Forms.ErrorProvider errorProvider1;
     }
 }
