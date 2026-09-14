@@ -151,6 +151,7 @@
             this.btnBrowse.Text = "Browse...";
             this.btnBrowse.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnBrowse.UseVisualStyleBackColor = true;
+            this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
             // 
             // label3
             // 
@@ -519,6 +520,7 @@
             this.btnSaveRecord.Text = "Save Person Record";
             this.btnSaveRecord.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnSaveRecord.UseVisualStyleBackColor = false;
+            this.btnSaveRecord.Click += new System.EventHandler(this.btnSaveRecord_Click);
             // 
             // errorProvider1
             // 

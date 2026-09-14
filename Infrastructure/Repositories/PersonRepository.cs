@@ -53,11 +53,13 @@ namespace Infrastructure.Repositories
         public async Task<int> AddAsync(Person person)
         {
             const string query = @"
-                INSERT INTO People (NationalNo, FirstName, SecondName, ThirdName, LastName, DateOfBirth, Gendor, Address, Phone, Email, NationalityCountryID, ImagePath)
-                VALUES (@NationalNo, @FirstName, @SecondName, @ThirdName, @LastName, @DateOfBirth, @Gendor, @Address, @Phone, @Email, @NationalityCountryID, @ImagePath);
+                INSERT INTO People (NationalNo, FirstName, SecondName, ThirdName, LastName, DateOfBirth, Gender, Address, Phone, Email, NationalityCountryID, ImagePath)
+                VALUES (@NationalNo, @FirstName, @SecondName, @ThirdName, @LastName, @DateOfBirth, @Gender, @Address, @Phone, @Email, @NationalityCountryID, @ImagePath);
                 SELECT CAST(SCOPE_IDENTITY() as int);";
 
             using var connection = CreateConnection();
+            // فتح الاتصال صراحةً للتأكد من عدم وجود Connection null
+            await connection.OpenAsync();
             return await connection.ExecuteScalarAsync<int>(query, person);
         }
 

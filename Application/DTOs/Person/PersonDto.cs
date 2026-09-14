@@ -16,9 +16,9 @@ namespace Application.DTOs.Person
         public string Email { get; set; } = string.Empty;
         public int NationalityCountryID { get; set; }
         public string? ImagePath { get; set; }
-        public string FirstName { get; internal set; } = string.Empty;
-        public string SecondName { get; internal set; } = string.Empty;
-        public string ThirdName { get; internal set; } = string.Empty;
-        public string LastName { get; internal set; } = string.Empty;
+        public string FirstName { get; set; } = string.Empty;
+        public string SecondName { get; set; } = string.Empty;
+        public string ThirdName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
     }
 }

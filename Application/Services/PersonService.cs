@@ -65,46 +65,102 @@ namespace Application.Services
             };
         }
 
-        public async Task<Person> GetPersonByNationalNoAsync(string nationalNo)
+        public async Task<PersonDto?> GetPersonByNationalNoAsync(string nationalNo)
         {
-            var person = await _personRepository.GetByNationalNoAsync(nationalNo);
-            if (person is null)
+            var personEntity = await _personRepository.GetByNationalNoAsync(nationalNo);
+            if (personEntity is null)
             {
                 throw new InvalidOperationException("A person with the provided National Id does not exists.");
             }
-            return person;
+            return new PersonDto
+            {
+                PersonID = personEntity.PersonId,
+                NationalNo = personEntity.NationalNo,
+                FirstName = personEntity.FirstName,
+                SecondName = personEntity.SecondName,
+                ThirdName = personEntity.ThirdName,
+                LastName = personEntity.LastName,
+                FullName = $"{personEntity.FirstName} {personEntity.SecondName} {personEntity.ThirdName} {personEntity.LastName}".Trim(),
+                GenderText = personEntity.Gender == 0 ? "Male" : "Female",
+                DateOfBirth = personEntity.DateOfBirth,
+                Phone = personEntity.Phone,
+                Email = personEntity.Email,
+                Address = personEntity.Address,
+                NationalityCountryID = personEntity.NationalityCountryID,
+                ImagePath = personEntity.ImagePath
+            };
         }
 
-        public async Task<int> AddPerson(Person person)
+        public async Task<int> AddPersonAsync(PersonDto personDto)
         {
-            if (person == null)
+            if (personDto == null)
             {
-                throw new ArgumentNullException(nameof(person));
+                throw new ArgumentNullException(nameof(personDto));
             }
-            else
+
+            // 1. التحقق من وجود الشخص عبر الـ Overloaded method
+            var personExists = await _personRepository.IsExistsAsync(personDto.NationalNo);
+            if (personExists)
             {
-                var personExists = await _personRepository.IsExistsAsync(person.NationalNo);
-                if (personExists)
-                {
-                    throw new InvalidOperationException("A person with the same NationalNo already exists.");
-                }
-                else
-                {
-                    return await _personRepository.AddAsync(person);
-                }
+                throw new InvalidOperationException("A person with the same NationalNo already exists.");
             }
+
+            // 2. تحويل الـ DTO إلى Entity (Mapping) للتعامل مع الـ Repository
+            var personEntity = new Person
+            {
+                NationalNo = personDto.NationalNo,
+                FirstName = personDto.FirstName,
+                SecondName = personDto.SecondName,
+                ThirdName = personDto.ThirdName,
+                LastName = personDto.LastName,
+                DateOfBirth = personDto.DateOfBirth,
+                Gender = personDto.GenderText == "Female" ? (byte)1 : (byte)0, // أو bool حسب نوع الحقل بـ Entity
+                Address = personDto.Address,
+                Phone = personDto.Phone,
+                Email = personDto.Email,
+                NationalityCountryID = personDto.NationalityCountryID,
+                ImagePath = personDto.ImagePath
+            };
+
+            // 3. التمرير للـ Repository وإرجاع الـ PersonID الجديد
+            return await _personRepository.AddAsync(personEntity);
+
         }
 
-        public async Task<bool> UpdatePerson(Person person)
+        public async Task<bool> UpdatePersonAsync(PersonDto personDto)
         {
-            if (person == null)
+            if (personDto == null)
             {
-                throw new ArgumentNullException(nameof(person));
+                throw new ArgumentNullException(nameof(personDto));
             }
-            else
+
+            // 1. التحقق من وجود الشخص عبر الـ Overloaded method
+            var personExists = await _personRepository.IsExistsAsync(personDto.NationalNo);
+            if (personExists)
             {
-                return await _personRepository.UpdateAsync(person);
+                throw new InvalidOperationException("A person with the same NationalNo already exists.");
             }
+
+            // 2. تحويل الـ DTO إلى Entity (Mapping) للتعامل مع الـ Repository
+            var personEntity = new Person
+            {
+                NationalNo = personDto.NationalNo,
+                FirstName = personDto.FirstName,
+                SecondName = personDto.SecondName,
+                ThirdName = personDto.ThirdName,
+                LastName = personDto.LastName,
+                DateOfBirth = personDto.DateOfBirth,
+                Gender = personDto.GenderText == "Female" ? (byte)1 : (byte)0, // أو bool حسب نوع الحقل بـ Entity
+                Address = personDto.Address,
+                Phone = personDto.Phone,
+                Email = personDto.Email,
+                NationalityCountryID = personDto.NationalityCountryID,
+                ImagePath = personDto.ImagePath
+            };
+
+            // 3. التمرير للـ Repository وإرجاع الـ PersonID الجديد
+            return await _personRepository.UpdateAsync(personEntity);
+
         }
 
         public async Task<bool> DeletePersonAsync(int personId)
