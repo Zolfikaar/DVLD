@@ -280,7 +280,7 @@ namespace UI.WinForms.Forms.Person
                 }
             }
 
-            var personDto = new PersonDto
+            var updatedPersonDto = new PersonDto
             {
                 NationalNo = tbNationalNumber.Text.Trim(),
                 FirstName = tbFirstname.Text.Trim(),
@@ -298,15 +298,27 @@ namespace UI.WinForms.Forms.Person
 
             try
             {
-                int newPersonId = await _personService.AddPersonAsync(personDto);
-                if (newPersonId > 0)
+                if (_isEditMode)
                 {
-                    MessageBox.Show($"Person Saved Successfully with ID: {newPersonId}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    bool updatedPerson = await _personService.UpdatePersonAsync(updatedPersonDto, _personId);
+                    if (updatedPerson)
+                    {
+                        MessageBox.Show($"Person Updated Successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        this.Close();
+                    }
+                }
+                else
+                {
+                    int newPersonId = await _personService.AddPersonAsync(updatedPersonDto);
+                    if (newPersonId > 0)
+                    {
+                        MessageBox.Show($"Person Saved Successfully with ID: {newPersonId}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    // تحويل الشاشة لوضع التعديل بعد الإضافة النجاح
-                    _personId = newPersonId;
-                    _isEditMode = true;
-                    this.Text = "Edit Person";
+                        // تحويل الشاشة لوضع التعديل بعد الإضافة النجاح
+                        _personId = newPersonId;
+                        _isEditMode = true;
+                        this.Text = "Edit Person";
+                    }
                 }
             }
             catch (Exception ex)

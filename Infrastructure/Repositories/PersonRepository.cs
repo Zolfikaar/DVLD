@@ -63,7 +63,7 @@ namespace Infrastructure.Repositories
             return await connection.ExecuteScalarAsync<int>(query, person);
         }
 
-        public async Task<bool> UpdateAsync(Person person)
+        public async Task<bool> UpdateAsync(Person updatedPerson, int currentPersonID)
         {
             const string query = @"
                 UPDATE People 
@@ -79,11 +79,15 @@ namespace Infrastructure.Repositories
                     Email = @Email,
                     NationalityCountryID = @NationalityCountryID,
                     ImagePath = @ImagePath
-                WHERE PersonID = @PersonID";
+                WHERE PersonID = @currentPersonID";
                 
 
             using var connection = CreateConnection();
-            var rowsEffected = await connection.ExecuteAsync(query, person);
+
+            var parameters = new DynamicParameters(updatedPerson);
+            parameters.Add("currentPersonID", currentPersonID);
+
+            var rowsEffected = await connection.ExecuteAsync(query, parameters);
             return rowsEffected > 0;
         }
 

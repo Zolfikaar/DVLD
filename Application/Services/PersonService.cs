@@ -29,6 +29,10 @@ namespace Application.Services
                 PersonID = p.PersonId,
                 NationalNo = p.NationalNo,
                 FullName = $"{p.FirstName} {p.SecondName} {p.ThirdName} {p.LastName}".Replace("  ", " "),
+                FirstName = p.FirstName,
+                SecondName = p.SecondName,
+                ThirdName = p.ThirdName,
+                LastName = p.LastName,
                 DateOfBirth = p.DateOfBirth,
                 GenderText = p.Gender == 0 ? "Male" : "Female",
                 Address = p.Address,
@@ -127,39 +131,30 @@ namespace Application.Services
 
         }
 
-        public async Task<bool> UpdatePersonAsync(PersonDto personDto)
+        public async Task<bool> UpdatePersonAsync(PersonDto updatedPersonDto, int currentPersonID)
         {
-            if (personDto == null)
+            if (updatedPersonDto == null)
             {
-                throw new ArgumentNullException(nameof(personDto));
+                throw new ArgumentNullException(nameof(updatedPersonDto));
             }
 
-            // 1. التحقق من وجود الشخص عبر الـ Overloaded method
-            var personExists = await _personRepository.IsExistsAsync(personDto.NationalNo);
-            if (personExists)
-            {
-                throw new InvalidOperationException("A person with the same NationalNo already exists.");
-            }
-
-            // 2. تحويل الـ DTO إلى Entity (Mapping) للتعامل مع الـ Repository
             var personEntity = new Person
             {
-                NationalNo = personDto.NationalNo,
-                FirstName = personDto.FirstName,
-                SecondName = personDto.SecondName,
-                ThirdName = personDto.ThirdName,
-                LastName = personDto.LastName,
-                DateOfBirth = personDto.DateOfBirth,
-                Gender = personDto.GenderText == "Female" ? (byte)1 : (byte)0, // أو bool حسب نوع الحقل بـ Entity
-                Address = personDto.Address,
-                Phone = personDto.Phone,
-                Email = personDto.Email,
-                NationalityCountryID = personDto.NationalityCountryID,
-                ImagePath = personDto.ImagePath
+                NationalNo = updatedPersonDto.NationalNo,
+                FirstName = updatedPersonDto.FirstName,
+                SecondName = updatedPersonDto.SecondName,
+                ThirdName = updatedPersonDto.ThirdName,
+                LastName = updatedPersonDto.LastName,
+                DateOfBirth = updatedPersonDto.DateOfBirth,
+                Gender = updatedPersonDto.GenderText == "Female" ? (byte)1 : (byte)0, // أو bool حسب نوع الحقل بـ Entity
+                Address = updatedPersonDto.Address,
+                Phone = updatedPersonDto.Phone,
+                Email = updatedPersonDto.Email,
+                NationalityCountryID = updatedPersonDto.NationalityCountryID,
+                ImagePath = updatedPersonDto.ImagePath
             };
 
-            // 3. التمرير للـ Repository وإرجاع الـ PersonID الجديد
-            return await _personRepository.UpdateAsync(personEntity);
+            return await _personRepository.UpdateAsync(personEntity,currentPersonID);
 
         }
 

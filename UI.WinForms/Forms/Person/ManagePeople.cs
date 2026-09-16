@@ -64,7 +64,6 @@ namespace UI.WinForms.Forms
         {
             if (dgvPeople.Columns.Count == 0) return;
 
-            // 1. الاسم هنا يجب أن يكون PersonalID ليطابق الـ DTO
             _setColumnHeader("PersonID", "Person ID");
             _setColumnHeader("NationalNo", "National No");
             _setColumnHeader("FullName", "Full Name");
@@ -75,8 +74,13 @@ namespace UI.WinForms.Forms
             _setColumnHeader("Address", "Address");
 
             // 2. إخفاء الأعمدة غير المطلوبة بأسماء مطابقة للـ DTO
+            _hideColumn("FirstName");
+            _hideColumn("SecondName");
+            _hideColumn("thirdName");
+            _hideColumn("LastName");
             _hideColumn("NationalityCountryID");
             _hideColumn("ImagePath");
+
         }
 
         // ميثود مساعدة لتغيير الاسم دون رمي استثناء
