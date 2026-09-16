@@ -17,7 +17,7 @@ namespace UI.WinForms
 
             PersonService personService = ServiceBootstrapper.CreatePersonService();
 
-            System.Windows.Forms.Application.Run(new Form1(personService));
+            System.Windows.Forms.Application.Run(new MainForm(personService));
 
     
         }

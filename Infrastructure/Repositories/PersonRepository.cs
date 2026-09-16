@@ -91,11 +91,11 @@ namespace Infrastructure.Repositories
             return rowsEffected > 0;
         }
 
-        public async Task<bool> DeleteAsync(int personalId)
+        public async Task<bool> DeleteAsync(int personId)
         {
-            const string query = "DELETE FROM People WHERE PersonalId = personalId";
+            const string query = "DELETE FROM People WHERE PersonID = @personId";
             using var connection = CreateConnection();
-            var rowsEffected = await connection.ExecuteAsync(query, personalId);
+            var rowsEffected = await connection.ExecuteAsync(query, new { personId = personId });
             return rowsEffected > 0;
         }
 

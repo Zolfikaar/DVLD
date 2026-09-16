@@ -5,10 +5,10 @@ using UI.WinForms.Forms;
 
 namespace UI.WinForms
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         private PersonService _personService;
-        public Form1(PersonService personService)
+        public MainForm(PersonService personService)
         {
             InitializeComponent();
             _personService = personService;

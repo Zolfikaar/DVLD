@@ -125,5 +125,52 @@ namespace UI.WinForms.Forms
             // إعادة تحديث الجدول فور الإغلاق
             _ = _refreshPeopleListAsync();
         }
+
+        private async void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (dgvPeople.CurrentRow == null) return;
+
+            DialogResult result = MessageBox.Show(
+                "Are you sure you want to delete this person?",
+                "Confirm Delete",
+                MessageBoxButtons.OKCancel,
+                MessageBoxIcon.Question
+            );
+
+            if (result == DialogResult.OK)
+            {
+                int selectedPersonId = (int)dgvPeople.CurrentRow.Cells["PersonID"].Value;
+
+                try
+                {
+                    bool isDeleted = await _personService.DeletePersonAsync(selectedPersonId);
+
+                    if (isDeleted)
+                    {
+                        MessageBox.Show("Person deleted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        await _refreshPeopleListAsync();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Person could not be deleted.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                catch (Microsoft.Data.SqlClient.SqlException ex) when (ex.Number == 547) // 547 = Foreign Key Constraint Violation
+                {
+                    MessageBox.Show(
+                        "Cannot delete this person because they have related data linked in the system.",
+                        "Delete Failed",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+
     }
 }
