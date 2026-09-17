@@ -15,11 +15,14 @@ namespace UI.WinForms.Forms
         private readonly PersonService _personService;
         private int _recordCount = 0;
         private List<PersonDto> _allPeopleList = new List<PersonDto>();
-        //private List<string> _filterByList = new List<string>();
         public ManagePeople(PersonService personService)
         {
             InitializeComponent();
             _personService = personService;
+
+            
+            editToolStripMenuItem.Click += editToolStripMenuItem_Click;
+            deleteToolStripMenuItem.Click += deleteToolStripMenuItem_Click;
         }
 
         private async void ManagePeople_Load(object sender, EventArgs e)
@@ -35,6 +38,7 @@ namespace UI.WinForms.Forms
             cbFilterBy.SelectedIndex = 0;
 
             await _refreshPeopleListAsync();
+            dgvPeople.ContextMenuStrip = cmsPeople;
         }
 
         private async Task _refreshPeopleListAsync()
@@ -241,6 +245,48 @@ namespace UI.WinForms.Forms
             {
                 tbSearch.Focus();
             }
+        }
+
+        private void dgvPeople_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            // التأكد من أن النقر تم بالزر الأيمن وعلى صف حقيقي (ليس على الهيدر)
+            if (e.Button == MouseButtons.Right && e.RowIndex >= 0)
+            {
+                dgvPeople.ClearSelection();
+                dgvPeople.Rows[e.RowIndex].Selected = true;
+
+                // ضبط الصف الحالي لضمان قراءة البيانات صح
+                dgvPeople.CurrentCell = dgvPeople.Rows[e.RowIndex].Cells[e.ColumnIndex >= 0 ? e.ColumnIndex : 0];
+            }
+        }
+
+        private void showDetailsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (dgvPeople.CurrentRow == null) return;
+
+            int selectedPersonId = (int)dgvPeople.CurrentRow.Cells["PersonID"].Value;
+
+            var frm = new PersonDetails(_personService, selectedPersonId);
+            frm.ShowDialog();
+        }
+
+        private async void editToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (dgvPeople.CurrentRow == null) return;
+
+            int selectedPersonId = (int)dgvPeople.CurrentRow.Cells["PersonID"].Value;
+
+            // فتح شاشة التعديل وتمرير الـ ID والـ Service
+            var frm = new AddEditForm(_personService, selectedPersonId);
+            frm.ShowDialog();
+
+            // إعادة تحديث الجدول بعد التعديل
+            await _refreshPeopleListAsync();
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            btnDelete_Click(sender, e);
         }
     }
 }
