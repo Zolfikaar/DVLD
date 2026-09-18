@@ -15,12 +15,13 @@ namespace UI.WinForms.Forms
         private readonly PersonService _personService;
         private int _recordCount = 0;
         private List<PersonDto> _allPeopleList = new List<PersonDto>();
+        private List<string> filtersList = new List<string>();
         public ManagePeople(PersonService personService)
         {
             InitializeComponent();
             _personService = personService;
 
-            
+
             editToolStripMenuItem.Click += editToolStripMenuItem_Click;
             deleteToolStripMenuItem.Click += deleteToolStripMenuItem_Click;
         }

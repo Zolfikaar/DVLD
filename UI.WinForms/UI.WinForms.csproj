@@ -159,12 +159,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\ManageTable.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ManageTable.Designer.cs">
-      <DependentUpon>ManageTable.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\Person\PersonDetails.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -191,9 +185,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Controls\ManageTable.resx">
-      <DependentUpon>ManageTable.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Person\PersonDetails.resx">
       <DependentUpon>PersonDetails.cs</DependentUpon>
     </EmbeddedResource>

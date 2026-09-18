@@ -79,7 +79,7 @@
             this.gbPersonInfo.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gbPersonInfo.Location = new System.Drawing.Point(0, 0);
             this.gbPersonInfo.Name = "gbPersonInfo";
-            this.gbPersonInfo.Size = new System.Drawing.Size(604, 568);
+            this.gbPersonInfo.Size = new System.Drawing.Size(673, 584);
             this.gbPersonInfo.TabIndex = 1;
             this.gbPersonInfo.TabStop = false;
             this.gbPersonInfo.Text = "Person Information";
@@ -301,7 +301,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(604, 568);
+            this.ClientSize = new System.Drawing.Size(673, 584);
             this.Controls.Add(this.gbPersonInfo);
             this.Name = "PersonDetails";
             this.Text = "PersonDetails";
