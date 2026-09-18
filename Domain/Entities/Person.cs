@@ -7,7 +7,7 @@ namespace Domain.Entities
 {
     public class Person
     {
-        public int PersonalId { get; set; }
+        public int PersonId { get; set; }
         public string NationalNo { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;
         public string SecondName { get; set; } = string.Empty;
@@ -16,9 +16,9 @@ namespace Domain.Entities
         public DateTime DateOfBirth {  get; set; }
         public byte Gender { get; set; }
         public string Address { get; set; } = string.Empty;
-        public int Phone { get; set; }
+        public string Phone { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public int NationalityCountryID;
+        public int NationalityCountryID { get; set; }
         public string ImagePath {  get; set; } = string.Empty;
     }
 }

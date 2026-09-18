@@ -1,6 +1,6 @@
 ﻿namespace UI.WinForms
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -221,6 +221,7 @@
             this.peopleToolStripMenuItem.Name = "peopleToolStripMenuItem";
             this.peopleToolStripMenuItem.Size = new System.Drawing.Size(109, 36);
             this.peopleToolStripMenuItem.Text = "People";
+            this.peopleToolStripMenuItem.Click += new System.EventHandler(this.peopleToolStripMenuItem_Click);
             // 
             // driversToolStripMenuItem
             // 

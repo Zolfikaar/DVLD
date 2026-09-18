@@ -1,31 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.Data.SqlClient;
-using Domain.Interfaces;
 using System.Data;
-using Domain.Entities;
+using System.Text;
 using Dapper;
+using Domain.Entities;
+using Domain.Interfaces;
+using Infrastructure.DB;
+using Microsoft.Data.SqlClient;
+using System.Threading.Tasks;
+
+#nullable enable
 
 namespace Infrastructure.Repositories
 {
     public class PersonRepository : IPersonRepository
     {
-        private readonly string _connectionString;
-        public PersonRepository(string connectionString) 
+
+        public PersonRepository()
         {
-            _connectionString = connectionString;
+            CreateConnection();
         }
 
-        private IDbConnection CreateConnection() => new SqlConnection(_connectionString);
 
-        public async Task<Person?> GetByPersonalIdAsync(int personId)
+        private SqlConnection CreateConnection()
         {
-            const string query = @"SELECT FirstName, SecondName, ThirdName, LastName, DateOfBirth, Gender, Address 
-                            From People Where PersonalId = @personId";
+            return DbInitializer.Connection();
+        }
+
+        public async Task<Person?> GetByPersonIdAsync(int personId)
+        {
+            const string query = "SELECT * FROM People WHERE PersonID = @personId";
 
             using var connection = CreateConnection();
-            return await connection.QueryFirstOrDefaultAsync<Person>(query, new { PersonalId = personId });
+            return await connection.QueryFirstOrDefaultAsync<Person>(query, new { personId = personId });
         }
 
         public async Task<Person?> GetByNationalNoAsync(string nationalNo)
@@ -38,23 +45,25 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<Person>> GetAllAsync()
         {
-            const string query = "SELECT * FROM People ORDER BY PersonID DESC";
-            using var connection = CreateConnection();
+            const string query = "SELECT * FROM People"; // ORDER BY PersonalId DESC
+            SqlConnection connection = CreateConnection();
             return await connection.QueryAsync<Person>(query);
         }
 
         public async Task<int> AddAsync(Person person)
         {
             const string query = @"
-                INSERT INTO People (NationalNo, FirstName, SecondName, ThirdName, LastName, DateOfBirth, Gendor, Address, Phone, Email, NationalityCountryID, ImagePath)
-                VALUES (@NationalNo, @FirstName, @SecondName, @ThirdName, @LastName, @DateOfBirth, @Gendor, @Address, @Phone, @Email, @NationalityCountryID, @ImagePath);
+                INSERT INTO People (NationalNo, FirstName, SecondName, ThirdName, LastName, DateOfBirth, Gender, Address, Phone, Email, NationalityCountryID, ImagePath)
+                VALUES (@NationalNo, @FirstName, @SecondName, @ThirdName, @LastName, @DateOfBirth, @Gender, @Address, @Phone, @Email, @NationalityCountryID, @ImagePath);
                 SELECT CAST(SCOPE_IDENTITY() as int);";
 
             using var connection = CreateConnection();
+            // فتح الاتصال صراحةً للتأكد من عدم وجود Connection null
+            await connection.OpenAsync();
             return await connection.ExecuteScalarAsync<int>(query, person);
         }
 
-        public async Task<bool> UpdateAsync(Person person)
+        public async Task<bool> UpdateAsync(Person updatedPerson, int currentPersonID)
         {
             const string query = @"
                 UPDATE People 
@@ -70,19 +79,23 @@ namespace Infrastructure.Repositories
                     Email = @Email,
                     NationalityCountryID = @NationalityCountryID,
                     ImagePath = @ImagePath
-                WHERE PersonID = @PersonID";
+                WHERE PersonID = @currentPersonID";
                 
 
             using var connection = CreateConnection();
-            var rowsEffected = await connection.ExecuteAsync(query, person);
+
+            var parameters = new DynamicParameters(updatedPerson);
+            parameters.Add("currentPersonID", currentPersonID);
+
+            var rowsEffected = await connection.ExecuteAsync(query, parameters);
             return rowsEffected > 0;
         }
 
-        public async Task<bool> DeleteAsync(int personalId)
+        public async Task<bool> DeleteAsync(int personId)
         {
-            const string query = "DELETE FROM People WHERE PersonalId = personalId";
+            const string query = "DELETE FROM People WHERE PersonID = @personId";
             using var connection = CreateConnection();
-            var rowsEffected = await connection.ExecuteAsync(query, personalId);
+            var rowsEffected = await connection.ExecuteAsync(query, new { personId = personId });
             return rowsEffected > 0;
         }
 

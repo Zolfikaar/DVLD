@@ -5,7 +5,8 @@
 	<Nullable>enable</Nullable>
 	  <LangVersion>10.0</LangVersion>
     <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
+    
+	  <ImplicitUsings>disable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
