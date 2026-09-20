@@ -14,5 +14,11 @@ namespace DependencyInjection
 
             return new PersonService(personRepo, countryRepo);
         }
+
+        public static UserService CreateUserService()
+        {
+            IUserRepository userRepo = new UserRepository();
+            return new UserService(userRepo);
+        }
     }
 }
