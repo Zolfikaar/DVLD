@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using Application.Services;
 using UI.WinForms.Forms;
+using UI.WinForms.Forms.Application;
 using UI.WinForms.Forms.User;
 
 namespace UI.WinForms
@@ -10,14 +11,16 @@ namespace UI.WinForms
     {
         private readonly PersonService _personService;
         private readonly UserService _userService;
+        private readonly ApplicationTypeService _applicationTypeService;
 
         public bool IsLogout { get; private set; }
 
-        public MainForm(PersonService personService, UserService userService)
+        public MainForm(PersonService personService, UserService userService, ApplicationTypeService applicationTypeService)
         {
             InitializeComponent();
             _personService = personService;
             _userService = userService;
+            _applicationTypeService = applicationTypeService;
             IsLogout = false;
         }
 
@@ -73,6 +76,12 @@ namespace UI.WinForms
             IsLogout = true;
             CurrentUserSession.SignOut();
             Close();
+        }
+
+        private void manageApplicationTypesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ManageApplicationTypes frm = new ManageApplicationTypes(_applicationTypeService);
+            frm.ShowDialog();
         }
     }
 }

@@ -20,5 +20,11 @@ namespace DependencyInjection
             IUserRepository userRepo = new UserRepository();
             return new UserService(userRepo);
         }
+
+        public static ApplicationTypeService CreateApplicationTypeService()
+        {
+            IApplicationTypeRepository applicationTypeRepo = new ApplicationTypeRepository();
+            return new ApplicationTypeService(applicationTypeRepo);
+        }
     }
 }
