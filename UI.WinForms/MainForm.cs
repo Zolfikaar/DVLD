@@ -2,32 +2,77 @@
 using System.Windows.Forms;
 using Application.Services;
 using UI.WinForms.Forms;
+using UI.WinForms.Forms.User;
 
 namespace UI.WinForms
 {
     public partial class MainForm : Form
     {
-        private PersonService _personService;
-        public MainForm(PersonService personService)
+        private readonly PersonService _personService;
+        private readonly UserService _userService;
+
+        public bool IsLogout { get; private set; }
+
+        public MainForm(PersonService personService, UserService userService)
         {
             InitializeComponent();
             _personService = personService;
+            _userService = userService;
+            IsLogout = false;
         }
 
         private void manageApplicationsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
         }
 
         private void drivingLicenseServiceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
         }
 
         private void peopleToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var frm = new ManagePeople(_personService);
+            ManagePeople frm = new ManagePeople(_personService);
             frm.ShowDialog();
+        }
+
+        private void usersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ManageUsers frm = new ManageUsers(_userService, _personService);
+            frm.ShowDialog();
+        }
+
+        private void currentUserInfoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (CurrentUserSession.CurrentUser == null)
+                return;
+
+            UserDetailsForm frm = new UserDetailsForm(_userService, _personService, CurrentUserSession.CurrentUser.Id);
+            frm.ShowDialog();
+        }
+
+        private void changePasswordToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (CurrentUserSession.CurrentUser == null)
+                return;
+
+            ChangePasswordForm frm = new ChangePasswordForm(_userService, CurrentUserSession.CurrentUser.Id, true);
+            frm.ShowDialog();
+        }
+
+        private void signOutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show(
+                "Are you sure you want to sign out?",
+                "Sign Out",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (result != DialogResult.Yes)
+                return;
+
+            IsLogout = true;
+            CurrentUserSession.SignOut();
+            Close();
         }
     }
 }

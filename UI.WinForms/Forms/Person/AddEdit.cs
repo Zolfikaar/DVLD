@@ -10,6 +10,11 @@ namespace UI.WinForms.Forms.Person
         private readonly PersonService _personService;
         private readonly int _personId;
 
+        public int SavedPersonId
+        {
+            get { return ctrlAddEditPerson1.PersonId; }
+        }
+
         public AddEditForm(PersonService personService, int personId = -1)
         {
             InitializeComponent();

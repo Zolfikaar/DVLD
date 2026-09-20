@@ -1,14 +1,14 @@
 ﻿using System;
+using System.Windows.Forms;
+using Application.DTOs;
 using Application.Services;
 using DependencyInjection;
+using UI.WinForms.Forms.User;
 
 namespace UI.WinForms
 {
     internal static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main()
         {
@@ -16,10 +16,30 @@ namespace UI.WinForms
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 
             PersonService personService = ServiceBootstrapper.CreatePersonService();
+            UserService userService = ServiceBootstrapper.CreateUserService();
 
-            System.Windows.Forms.Application.Run(new MainForm(personService));
+            while (true)
+            {
+                UserDto loggedInUser;
+                using (LoginForm loginForm = new LoginForm(userService))
+                {
+                    if (loginForm.ShowDialog() != DialogResult.OK || loginForm.LoggedInUser == null)
+                        return;
 
-    
+                    loggedInUser = loginForm.LoggedInUser;
+                }
+
+                CurrentUserSession.SignIn(loggedInUser);
+
+                using (MainForm mainForm = new MainForm(personService, userService))
+                {
+                    System.Windows.Forms.Application.Run(mainForm);
+                    CurrentUserSession.SignOut();
+
+                    if (!mainForm.IsLogout)
+                        return;
+                }
+            }
         }
     }
 }

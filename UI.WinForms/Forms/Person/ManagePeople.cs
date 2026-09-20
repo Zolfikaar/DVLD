@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using Application.DTOs.Person;
+using Application.DTOs;
 using Application.Services;
 using UI.WinForms.Forms.Person;
 using UI.WinForms.UserControls;

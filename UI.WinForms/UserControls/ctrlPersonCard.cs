@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Application.DTOs;
-using Application.DTOs.Person;
 using Application.Services;
 
 namespace UI.WinForms.UserControls
