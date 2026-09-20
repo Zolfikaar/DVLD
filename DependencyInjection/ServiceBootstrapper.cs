@@ -26,5 +26,11 @@ namespace DependencyInjection
             IApplicationTypeRepository applicationTypeRepo = new ApplicationTypeRepository();
             return new ApplicationTypeService(applicationTypeRepo);
         }
+
+        public static TestTypeService CreateTestTypeService()
+        {
+            ITestTypeRepository testTypeRepo = new TestTypeRepository();
+            return new TestTypeService(testTypeRepo);
+        }
     }
 }

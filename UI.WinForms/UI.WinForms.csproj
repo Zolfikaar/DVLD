@@ -178,6 +178,18 @@
     <Compile Include="Forms\Person\PersonDetails.Designer.cs">
       <DependentUpon>PersonDetails.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Test\EditTestType.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Test\EditTestType.Designer.cs">
+      <DependentUpon>EditTestType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Test\ManageTestType.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Test\ManageTestType.Designer.cs">
+      <DependentUpon>ManageTestType.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -254,6 +266,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Person\PersonDetails.resx">
       <DependentUpon>PersonDetails.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Test\EditTestType.resx">
+      <DependentUpon>EditTestType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Test\ManageTestType.resx">
+      <DependentUpon>ManageTestType.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -342,6 +360,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Applications 64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Schedule Test 512.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets" Condition="Exists('..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets')" />

@@ -4,6 +4,7 @@ using Application.Services;
 using UI.WinForms.Forms;
 using UI.WinForms.Forms.Application;
 using UI.WinForms.Forms.User;
+using UI.WinForms.Forms.Test;
 
 namespace UI.WinForms
 {
@@ -12,15 +13,17 @@ namespace UI.WinForms
         private readonly PersonService _personService;
         private readonly UserService _userService;
         private readonly ApplicationTypeService _applicationTypeService;
+        private readonly TestTypeService _testTypeService;
 
         public bool IsLogout { get; private set; }
 
-        public MainForm(PersonService personService, UserService userService, ApplicationTypeService applicationTypeService)
+        public MainForm(PersonService personService, UserService userService, ApplicationTypeService applicationTypeService, TestTypeService testTypeService)
         {
             InitializeComponent();
             _personService = personService;
             _userService = userService;
             _applicationTypeService = applicationTypeService;
+            _testTypeService = testTypeService;
             IsLogout = false;
         }
 
@@ -81,6 +84,12 @@ namespace UI.WinForms
         private void manageApplicationTypesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ManageApplicationTypes frm = new ManageApplicationTypes(_applicationTypeService);
+            frm.ShowDialog();
+        }
+
+        private void manageTestTypesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ManageTestTypes frm = new ManageTestTypes(_testTypeService);
             frm.ShowDialog();
         }
     }
