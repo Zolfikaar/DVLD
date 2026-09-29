@@ -82,8 +82,6 @@
             this.lblLocalLicenseAppID = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
             this.cbLicenseClasses = new System.Windows.Forms.ComboBox();
-            this.lblRecordsCount = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
@@ -702,26 +700,6 @@
             this.cbLicenseClasses.Size = new System.Drawing.Size(121, 24);
             this.cbLicenseClasses.TabIndex = 22;
             // 
-            // lblRecordsCount
-            // 
-            this.lblRecordsCount.AutoSize = true;
-            this.lblRecordsCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRecordsCount.Location = new System.Drawing.Point(119, 641);
-            this.lblRecordsCount.Name = "lblRecordsCount";
-            this.lblRecordsCount.Size = new System.Drawing.Size(19, 20);
-            this.lblRecordsCount.TabIndex = 18;
-            this.lblRecordsCount.Text = "0";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(12, 641);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(101, 20);
-            this.label2.TabIndex = 17;
-            this.label2.Text = "#Records: ";
-            // 
             // lblTitle
             // 
             this.lblTitle.AutoSize = true;
@@ -773,8 +751,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1138, 677);
             this.Controls.Add(this.lblTitle);
-            this.Controls.Add(this.lblRecordsCount);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.tcApplicationInfo);
@@ -815,8 +791,6 @@
         private System.Windows.Forms.TabPage tpApplicationInfo;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Button btnSave;
-        private System.Windows.Forms.Label lblRecordsCount;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.GroupBox gbPersonInfo;
         private System.Windows.Forms.GroupBox gbFilter;

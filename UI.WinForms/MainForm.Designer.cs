@@ -110,35 +110,36 @@
             this.internationalLicenseToolStripMenuItem});
             this.newDrivingLicenseToolStripMenuItem.Image = global::UI.WinForms.Properties.Resources.id_3;
             this.newDrivingLicenseToolStripMenuItem.Name = "newDrivingLicenseToolStripMenuItem";
-            this.newDrivingLicenseToolStripMenuItem.Size = new System.Drawing.Size(370, 26);
+            this.newDrivingLicenseToolStripMenuItem.Size = new System.Drawing.Size(382, 38);
             this.newDrivingLicenseToolStripMenuItem.Text = "New Driving License";
             // 
             // localLicenseToolStripMenuItem
             // 
             this.localLicenseToolStripMenuItem.Image = global::UI.WinForms.Properties.Resources.id_8;
             this.localLicenseToolStripMenuItem.Name = "localLicenseToolStripMenuItem";
-            this.localLicenseToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.localLicenseToolStripMenuItem.Size = new System.Drawing.Size(236, 38);
             this.localLicenseToolStripMenuItem.Text = "Local License";
+            this.localLicenseToolStripMenuItem.Click += new System.EventHandler(this.localLicenseToolStripMenuItem_Click);
             // 
             // internationalLicenseToolStripMenuItem
             // 
             this.internationalLicenseToolStripMenuItem.Image = global::UI.WinForms.Properties.Resources.international_License;
             this.internationalLicenseToolStripMenuItem.Name = "internationalLicenseToolStripMenuItem";
-            this.internationalLicenseToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.internationalLicenseToolStripMenuItem.Size = new System.Drawing.Size(236, 38);
             this.internationalLicenseToolStripMenuItem.Text = "International License";
             // 
             // renewDrivingLicenseToolStripMenuItem
             // 
             this.renewDrivingLicenseToolStripMenuItem.Image = global::UI.WinForms.Properties.Resources.reload;
             this.renewDrivingLicenseToolStripMenuItem.Name = "renewDrivingLicenseToolStripMenuItem";
-            this.renewDrivingLicenseToolStripMenuItem.Size = new System.Drawing.Size(370, 26);
+            this.renewDrivingLicenseToolStripMenuItem.Size = new System.Drawing.Size(382, 38);
             this.renewDrivingLicenseToolStripMenuItem.Text = "Renew Driving License";
             // 
             // replacmentForLostOrDamagedLicenseToolStripMenuItem
             // 
             this.replacmentForLostOrDamagedLicenseToolStripMenuItem.Image = global::UI.WinForms.Properties.Resources.icons8_replace_64;
             this.replacmentForLostOrDamagedLicenseToolStripMenuItem.Name = "replacmentForLostOrDamagedLicenseToolStripMenuItem";
-            this.replacmentForLostOrDamagedLicenseToolStripMenuItem.Size = new System.Drawing.Size(370, 26);
+            this.replacmentForLostOrDamagedLicenseToolStripMenuItem.Size = new System.Drawing.Size(382, 38);
             this.replacmentForLostOrDamagedLicenseToolStripMenuItem.Text = "Replacment For Lost or Damaged License";
             // 
             // manageApplicationsToolStripMenuItem

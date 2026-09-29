@@ -106,5 +106,11 @@ namespace UI.WinForms
             ManageApplications_InternationalLicense frm = new ManageApplications_InternationalLicense();
             frm.ShowDialog();
         }
+
+        private void localLicenseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ManageApplications_LocalLicense frm = new ManageApplications_LocalLicense(_localLicenseService, _personService);
+            frm.ShowDialog();
+        }
     }
 }
