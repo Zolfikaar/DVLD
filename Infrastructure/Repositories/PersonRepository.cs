@@ -34,7 +34,7 @@ namespace Infrastructure.Repositories
 
         public async Task<Person?> GetByNationalNoAsync(string nationalNo)
         {
-            const string query = "SELECT FirstName, SecondName, ThirdName, LastName, DateOfBirth, Gender, Address FROM People WHERE NationalNo = @nationalNo";
+            const string query = "SELECT * FROM People WHERE NationalNo = @nationalNo";
 
             using var connection = CreateConnection();
             return await connection.QueryFirstOrDefaultAsync<Person>(query, new { NationalNo = nationalNo });

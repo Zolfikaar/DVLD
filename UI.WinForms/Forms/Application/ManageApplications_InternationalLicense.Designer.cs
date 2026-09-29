@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.btnAddNew = new System.Windows.Forms.Button();
+            this.txtFilterValue = new System.Windows.Forms.TextBox();
+            this.cbFilterBy = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.lblRecordsCount = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -42,30 +42,34 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
-            // button1
+            // btnAddNew
             // 
-            this.button1.BackgroundImage = global::UI.WinForms.Properties.Resources.New_Application_64;
-            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.button1.Location = new System.Drawing.Point(1027, 170);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(64, 56);
-            this.button1.TabIndex = 30;
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnAddNew.BackgroundImage = global::UI.WinForms.Properties.Resources.New_Application_64;
+            this.btnAddNew.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnAddNew.Location = new System.Drawing.Point(1027, 170);
+            this.btnAddNew.Name = "btnAddNew";
+            this.btnAddNew.Size = new System.Drawing.Size(64, 56);
+            this.btnAddNew.TabIndex = 30;
+            this.btnAddNew.UseVisualStyleBackColor = true;
+            this.btnAddNew.Click += new System.EventHandler(this.btnAddNew_Click);
             // 
-            // textBox1
+            // txtFilterValue
             // 
-            this.textBox1.Location = new System.Drawing.Point(234, 196);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(130, 22);
-            this.textBox1.TabIndex = 29;
+            this.txtFilterValue.Location = new System.Drawing.Point(234, 196);
+            this.txtFilterValue.Name = "txtFilterValue";
+            this.txtFilterValue.Size = new System.Drawing.Size(130, 22);
+            this.txtFilterValue.TabIndex = 29;
+            this.txtFilterValue.TextChanged += new System.EventHandler(this.txtFilterValue_TextChanged);
             // 
-            // comboBox1
+            // cbFilterBy
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(106, 195);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 24);
-            this.comboBox1.TabIndex = 28;
+            this.cbFilterBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbFilterBy.FormattingEnabled = true;
+            this.cbFilterBy.Location = new System.Drawing.Point(106, 195);
+            this.cbFilterBy.Name = "cbFilterBy";
+            this.cbFilterBy.Size = new System.Drawing.Size(121, 24);
+            this.cbFilterBy.TabIndex = 28;
+            this.cbFilterBy.SelectedIndexChanged += new System.EventHandler(this.cbFilterBy_SelectedIndexChanged);
             // 
             // label3
             // 
@@ -99,6 +103,13 @@
             // 
             // dgvApplications
             // 
+            this.dgvApplications.AllowUserToAddRows = false;
+            this.dgvApplications.AllowUserToDeleteRows = false;
+            this.dgvApplications.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvApplications.BackgroundColor = System.Drawing.Color.White;
+            this.dgvApplications.ReadOnly = true;
+            this.dgvApplications.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvApplications.MultiSelect = false;
             this.dgvApplications.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvApplications.Location = new System.Drawing.Point(12, 237);
             this.dgvApplications.Name = "dgvApplications";
@@ -106,6 +117,7 @@
             this.dgvApplications.RowTemplate.Height = 24;
             this.dgvApplications.Size = new System.Drawing.Size(1080, 352);
             this.dgvApplications.TabIndex = 24;
+            this.dgvApplications.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvApplications_CellDoubleClick);
             // 
             // label1
             // 
@@ -150,9 +162,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1105, 647);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.btnAddNew);
+            this.Controls.Add(this.txtFilterValue);
+            this.Controls.Add(this.cbFilterBy);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.lblRecordsCount);
             this.Controls.Add(this.label2);
@@ -161,6 +173,7 @@
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.pictureBox1);
             this.Name = "ManageApplications_InternationalLicense";
+            this.Load += new System.EventHandler(this.ManageApplications_InternationalLicense_Load);
             this.Text = "ManageApplications_InternationalLicense";
             ((System.ComponentModel.ISupportInitialize)(this.dgvApplications)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -171,9 +184,9 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Button btnAddNew;
+        private System.Windows.Forms.TextBox txtFilterValue;
+        private System.Windows.Forms.ComboBox cbFilterBy;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblRecordsCount;
         private System.Windows.Forms.Label label2;
