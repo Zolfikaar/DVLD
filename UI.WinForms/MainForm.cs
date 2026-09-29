@@ -2,7 +2,9 @@
 using System.Windows.Forms;
 using Application.Services;
 using UI.WinForms.Forms;
+using UI.WinForms.Forms.Application;
 using UI.WinForms.Forms.User;
+using UI.WinForms.Forms.Test;
 
 namespace UI.WinForms
 {
@@ -10,14 +12,20 @@ namespace UI.WinForms
     {
         private readonly PersonService _personService;
         private readonly UserService _userService;
+        private readonly ApplicationTypeService _applicationTypeService;
+        private readonly TestTypeService _testTypeService;
+        private readonly LocalLicenseService _localLicenseService;
 
         public bool IsLogout { get; private set; }
 
-        public MainForm(PersonService personService, UserService userService)
+        public MainForm(PersonService personService, UserService userService, ApplicationTypeService applicationTypeService, TestTypeService testTypeService, LocalLicenseService localLicenseService)
         {
             InitializeComponent();
+            _localLicenseService = localLicenseService;
             _personService = personService;
             _userService = userService;
+            _applicationTypeService = applicationTypeService;
+            _testTypeService = testTypeService;
             IsLogout = false;
         }
 
@@ -73,6 +81,30 @@ namespace UI.WinForms
             IsLogout = true;
             CurrentUserSession.SignOut();
             Close();
+        }
+
+        private void manageApplicationTypesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ManageApplicationTypes frm = new ManageApplicationTypes(_applicationTypeService);
+            frm.ShowDialog();
+        }
+
+        private void manageTestTypesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ManageTestTypes frm = new ManageTestTypes(_testTypeService);
+            frm.ShowDialog();
+        }
+
+        private void localDrivingLicenseApplicationsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ManageApplications_LocalLicense frm = new ManageApplications_LocalLicense(_localLicenseService, _personService);
+            frm.ShowDialog();
+        }
+
+        private void internationalDrivingLicenseApplicationsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ManageApplications_InternationalLicense frm = new ManageApplications_InternationalLicense();
+            frm.ShowDialog();
         }
     }
 }

@@ -20,5 +20,23 @@ namespace DependencyInjection
             IUserRepository userRepo = new UserRepository();
             return new UserService(userRepo);
         }
+
+        public static ApplicationTypeService CreateApplicationTypeService()
+        {
+            IApplicationTypeRepository applicationTypeRepo = new ApplicationTypeRepository();
+            return new ApplicationTypeService(applicationTypeRepo);
+        }
+
+        public static TestTypeService CreateTestTypeService()
+        {
+            ITestTypeRepository testTypeRepo = new TestTypeRepository();
+            return new TestTypeService(testTypeRepo);
+        }
+
+        public static LocalLicenseService CreateLocalLicenseService()
+        {
+            ILocalLicenseRepository localLicenseRepo = new LocalLicenseRepository();
+            return new LocalLicenseService(localLicenseRepo);
+        }
     }
 }
