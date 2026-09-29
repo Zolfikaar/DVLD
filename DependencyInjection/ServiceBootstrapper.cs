@@ -32,5 +32,11 @@ namespace DependencyInjection
             ITestTypeRepository testTypeRepo = new TestTypeRepository();
             return new TestTypeService(testTypeRepo);
         }
+
+        public static LocalLicenseService CreateLocalLicenseService()
+        {
+            ILocalLicenseRepository localLicenseRepo = new LocalLicenseRepository();
+            return new LocalLicenseService(localLicenseRepo);
+        }
     }
 }

@@ -19,7 +19,7 @@ namespace UI.WinForms.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -86,6 +86,16 @@ namespace UI.WinForms.Properties {
         internal static System.Drawing.Bitmap Application_Types_64 {
             get {
                 object obj = ResourceManager.GetObject("Application Types 64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Applications {
+            get {
+                object obj = ResourceManager.GetObject("Applications", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -893,6 +903,56 @@ namespace UI.WinForms.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap License_Type_32 {
+            get {
+                object obj = ResourceManager.GetObject("License Type 32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap money_32 {
+            get {
+                object obj = ResourceManager.GetObject("money 32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap New_Application_64 {
+            get {
+                object obj = ResourceManager.GetObject("New Application 64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap New_Driving_License_32 {
+            get {
+                object obj = ResourceManager.GetObject("New Driving License 32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap People_400 {
+            get {
+                object obj = ResourceManager.GetObject("People 400", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap person_boy {
             get {
                 object obj = ResourceManager.GetObject("person_boy", resourceCulture);
@@ -1006,6 +1066,16 @@ namespace UI.WinForms.Properties {
         internal static System.Drawing.Bitmap user_1 {
             get {
                 object obj = ResourceManager.GetObject("user_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap User_32__2 {
+            get {
+                object obj = ResourceManager.GetObject("User 32 -2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

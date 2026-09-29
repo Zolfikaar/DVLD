@@ -92,5 +92,17 @@ namespace UI.WinForms
             ManageTestTypes frm = new ManageTestTypes(_testTypeService);
             frm.ShowDialog();
         }
+
+        private void localDrivingLicenseApplicationsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ManageApplications_LocalLicense frm = new ManageApplications_LocalLicense();
+            frm.ShowDialog();
+        }
+
+        private void internationalDrivingLicenseApplicationsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ManageApplications_InternationalLicense frm = new ManageApplications_InternationalLicense();
+            frm.ShowDialog();
+        }
     }
 }
