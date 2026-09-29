@@ -81,7 +81,11 @@ namespace Infrastructure.Repositories
                             SELECT CAST(SCOPE_IDENTITY() as int);";
 
                         // ملاحظة: افترضنا القيم الأساسية للطلب
-                        int appId = await connection.ExecuteScalarAsync<int>(sqlApp, transaction: transaction);
+                        int appId = await connection.ExecuteScalarAsync<int>(sqlApp, new
+                        {
+                            ApplicantPersonID = localLicense.ApplicantPersonID,
+                            CreatedByUserID = localLicense.CreatedByUserID
+                        }, transaction: transaction);
 
                         // 2. ربطه بطلب الرخصة المحلية
                         string sqlLocal = @"
@@ -89,7 +93,7 @@ namespace Infrastructure.Repositories
                             VALUES (@ApplicationID, @LicenseClassID);
                             SELECT CAST(SCOPE_IDENTITY() as int);";
 
-                        int localAppId = await connection.ExecuteScalarAsync<int>(sqlLocal, new { ApplicationID = appId, LicenseClassID = 3 }, transaction: transaction);
+                        int localAppId = await connection.ExecuteScalarAsync<int>(sqlLocal, new { ApplicationID = appId, LicenseClassID = localLicense.LicenseClassID }, transaction: transaction);
 
                         transaction.Commit();
                         return localAppId;

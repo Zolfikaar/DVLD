@@ -12,12 +12,14 @@ namespace UI.WinForms.Forms.Application
     public partial class ManageApplications_LocalLicense : Form
     {
         private readonly LocalLicenseService _localLicenseService;
+        private readonly PersonService _personService;
         private List<LocalLicenseDto> _allApplications = new List<LocalLicenseDto>();
 
-        public ManageApplications_LocalLicense(LocalLicenseService localLicenseService)
+        public ManageApplications_LocalLicense(LocalLicenseService localLicenseService, PersonService personService)
         {
             InitializeComponent();
             _localLicenseService = localLicenseService;
+            _personService = personService;
         }
 
         private async void ManageApplications_LocalLicense_Load(object sender, EventArgs e)
@@ -151,7 +153,7 @@ namespace UI.WinForms.Forms.Application
 
         private async void btnAddNew_Click(object sender, EventArgs e)
         {
-            var frm = new AddEdit_LocalLicenseApplication(_localLicenseService, -1);
+            var frm = new AddEdit_LocalLicenseApplication(_localLicenseService, -1, _personService);
             frm.ShowDialog();
             await _loadApplicationsDataAsync();
         }
@@ -170,7 +172,7 @@ namespace UI.WinForms.Forms.Application
             if (dgvLocalLicenses.CurrentRow == null) return;
 
             int selectedAppId = (int)dgvLocalLicenses.CurrentRow.Cells["LocalDrivingLicenseApplicationID"].Value;
-            var frm = new AddEdit_LocalLicenseApplication(_localLicenseService, selectedAppId);
+            var frm = new AddEdit_LocalLicenseApplication(_localLicenseService, selectedAppId, _personService);
             frm.ShowDialog();
             await _loadApplicationsDataAsync();
         }

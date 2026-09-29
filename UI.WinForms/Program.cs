@@ -19,6 +19,7 @@ namespace UI.WinForms
             UserService userService = ServiceBootstrapper.CreateUserService();
             ApplicationTypeService applicationTypeService = ServiceBootstrapper.CreateApplicationTypeService();
             TestTypeService testTypeService = ServiceBootstrapper.CreateTestTypeService();
+            LocalLicenseService localLicenseService = ServiceBootstrapper.CreateLocalLicenseService();
 
             while (true)
             {
@@ -33,7 +34,7 @@ namespace UI.WinForms
 
                 CurrentUserSession.SignIn(loggedInUser);
 
-                using (MainForm mainForm = new MainForm(personService, userService, applicationTypeService, testTypeService))
+                using (MainForm mainForm = new MainForm(personService, userService, applicationTypeService, testTypeService, localLicenseService))
                 {
                     System.Windows.Forms.Application.Run(mainForm);
                     CurrentUserSession.SignOut();
