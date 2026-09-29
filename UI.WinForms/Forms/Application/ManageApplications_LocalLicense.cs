@@ -37,7 +37,7 @@ namespace UI.WinForms.Forms.Application
 
                 dgvLocalLicenses.DataSource = _allApplications;
                 lblRecordsCount.Text = _allApplications.Count.ToString();
-
+                dgvLocalLicenses.ContextMenuStrip = cmsLocalLicenses;
                 _formatGridColumns();
             }
             catch (Exception ex)
@@ -146,8 +146,15 @@ namespace UI.WinForms.Forms.Application
             {
                 dgvLocalLicenses.ClearSelection();
                 dgvLocalLicenses.Rows[e.RowIndex].Selected = true;
+
                 int columnIndex = e.ColumnIndex >= 0 ? e.ColumnIndex : 0;
                 dgvLocalLicenses.CurrentCell = dgvLocalLicenses.Rows[e.RowIndex].Cells[columnIndex];
+
+                // إظهار القائمة المنسدلة بموقع الماوس فوراً
+                if (dgvLocalLicenses.ContextMenuStrip != null)
+                {
+                    dgvLocalLicenses.ContextMenuStrip.Show(Cursor.Position);
+                }
             }
         }
 
@@ -202,5 +209,7 @@ namespace UI.WinForms.Forms.Application
         {
             Close();
         }
+
+
     }
 }
