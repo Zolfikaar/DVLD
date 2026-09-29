@@ -12,9 +12,12 @@ namespace UI.WinForms.Forms.Application
 {
     public partial class LocalLicense_ApplicationDetails : Form
     {
-        public LocalLicense_ApplicationDetails()
+        private readonly int _localLicenseAppId;
+
+        public LocalLicense_ApplicationDetails(int localLicenseAppId)
         {
             InitializeComponent();
+            _localLicenseAppId = localLicenseAppId;
         }
     }
 }

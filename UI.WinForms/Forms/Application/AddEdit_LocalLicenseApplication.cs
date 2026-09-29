@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,8 +15,9 @@ namespace UI.WinForms.Forms.Application
 
         private readonly PersonService _personService;
         private readonly LocalLicenseService _localLicenseService;
-        private readonly int _localLicenseAppId;
+        private int _localLicenseAppId;
         private LocalLicenseDto _applicationDto;
+        private List<CountryDto> _countries = new List<CountryDto>();
         private int _selectedPersonId = -1;
 
         public AddEdit_LocalLicenseApplication(LocalLicenseService localLicenseService, int localLicenseAppId, PersonService personService)
@@ -32,6 +33,8 @@ namespace UI.WinForms.Forms.Application
         {
             _resetDefualtValues();
 
+            _countries = (await _personService.GetAllCountriesAsync()).ToList();
+
             if (_mode == Mode.Update)
             {
                 await _loadApplicationDataAsync();
@@ -40,39 +43,52 @@ namespace UI.WinForms.Forms.Application
 
         private void _resetDefualtValues()
         {
+            _loadFilterOptionsToComboBox();
+            _loadLicenseClassesToComboBox();
+            _resetPersonInfo();
+
+            lblApplicationDate.Text = DateTime.Now.ToString("dd/MM/yyyy");
+            lblApplicationFees.Text = "15";
+            lblCreatedBy.Text = CurrentUserSession.IsLoggedIn ? CurrentUserSession.CurrentUser.Username : "Unknown";
+
             if (_mode == Mode.AddNew)
             {
                 lblTitle.Text = "New Local Driving License Application";
                 this.Text = "New Local Driving License Application";
                 _applicationDto = new LocalLicenseDto();
 
-                lblApplicationDate.Text = DateTime.Now.ToString("dd/MM/yyyy");
-                lblApplicationFees.Text = "15"; // رسوم الخدمة الثابتة
-                lblCreatedBy.Text = "Admin"; // المستخدم الحالي
+                lblLocalLicenseAppID.Text = "N/A";
                 btnSave.Enabled = false;
-                tcApplicationInfo.Enabled = false;
+                btnNext.Enabled = false;
+                tpApplicationInfo.Enabled = false;
             }
             else
             {
                 lblTitle.Text = "Update Local Driving License Application";
                 this.Text = "Update Local Driving License Application";
                 btnSave.Enabled = true;
-                tcApplicationInfo.Enabled = true;
+                btnNext.Enabled = true;
+                tpApplicationInfo.Enabled = true;
             }
+        }
 
-            _loadLicenseClassesToComboBox();
+        private void _loadFilterOptionsToComboBox()
+        {
+            cbFilterBy.Items.Clear();
+            cbFilterBy.Items.Add("National No");
+            cbFilterBy.Items.Add("Person ID");
+            cbFilterBy.SelectedIndex = 0;
         }
 
         private void _loadLicenseClassesToComboBox()
         {
-            // تعبئة الكومبو بوكس بالفئات (يمكن ربطها بـ LicenseClassService إذا توفرت)
             cbLicenseClasses.Items.Clear();
             cbLicenseClasses.Items.Add("Class 1 - Small Motorcycle");
             cbLicenseClasses.Items.Add("Class 2 - Heavy Motorcycle License");
             cbLicenseClasses.Items.Add("Class 3 - Ordinary driving license");
             cbLicenseClasses.Items.Add("Class 4 - Commercial");
             cbLicenseClasses.Items.Add("Class 5 - Agricultural");
-            cbLicenseClasses.SelectedIndex = 2; // Class 3 افتراضياً
+            cbLicenseClasses.SelectedIndex = 2;
         }
 
         private async Task _loadApplicationDataAsync()
@@ -90,80 +106,92 @@ namespace UI.WinForms.Forms.Application
             lblApplicationDate.Text = _applicationDto.ApplicationDate.ToString("dd/MM/yyyy");
             cbLicenseClasses.SelectedItem = _applicationDto.ClassName;
 
-            // كارت تفاصيل الشخص يستدعي بيانتها بالـ ID
-            // ctrlPersonCardWithFilter1.LoadPersonInfo(_applicationDto.ApplicantPersonID);
+            await _loadPersonByNationalNoAsync(_applicationDto.NationalNo);
         }
 
-        // حدث اختيار الشخص من الـ UserControl الخاص ببحث الأشخاص
-        private void ctrlPersonCardWithFilter1_OnPersonSelected(int personId)
+        private async Task _loadPersonByIdAsync(int personId)
         {
-            _selectedPersonId = personId;
+            PersonDto person = await _personService.GetPersonByPersonIdAsync(personId);
 
-            if (_selectedPersonId == -1)
+            if (person == null)
             {
-                btnSave.Enabled = false;
-                tcApplicationInfo.Enabled = false;
+                MessageBox.Show("No Person Found with ID = " + personId, "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                _resetPersonInfo();
                 return;
             }
 
+            _selectPerson(person);
+        }
+
+        private async Task _loadPersonByNationalNoAsync(string nationalNo)
+        {
+            PersonDto person = null;
+
+            try
+            {
+                person = await _personService.GetPersonByNationalNoAsync(nationalNo);
+            }
+            catch (InvalidOperationException)
+            {
+                person = null;
+            }
+
+            if (person == null)
+            {
+                MessageBox.Show("No Person Found with National No = " + nationalNo, "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                _resetPersonInfo();
+                return;
+            }
+
+            _selectPerson(person);
+        }
+
+        private void _selectPerson(PersonDto person)
+        {
+            _selectedPersonId = person.PersonID;
+
+            lblPersonID.Text = person.PersonID.ToString();
+            lblFullName.Text = person.FullName;
+            lblNationalNo.Text = person.NationalNo;
+            lblGendor.Text = person.GenderText;
+            lblEmail.Text = person.Email;
+            lblAddress.Text = person.Address;
+            lblDateOfBirth.Text = person.DateOfBirth.ToString("dd/MM/yyyy");
+            lblPhone.Text = person.Phone;
+
+            CountryDto country = _countries.FirstOrDefault(c => c.CountryID == person.NationalityCountryID);
+            lblCountry.Text = country == null ? string.Empty : country.CountryName;
+
+            llEditPersonInfo.Enabled = true;
+            btnNext.Enabled = true;
             btnSave.Enabled = true;
-            tcApplicationInfo.Enabled = true;
+            tpApplicationInfo.Enabled = true;
         }
 
-        private void btnNext_Click(object sender, EventArgs e)
+        private void _resetPersonInfo()
         {
-            if (_selectedPersonId == -1 && _mode == Mode.AddNew)
-            {
-                MessageBox.Show("Please Select a Person First!", "Select Person", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            _selectedPersonId = -1;
 
-            tcApplicationInfo.SelectedTab = tpApplicationInfo;
-        }
+            lblPersonID.Text = "[?????]";
+            lblFullName.Text = "[?????]";
+            lblNationalNo.Text = "[?????]";
+            lblGendor.Text = "[?????]";
+            lblEmail.Text = "[?????]";
+            lblAddress.Text = "[?????]";
+            lblDateOfBirth.Text = "[?????]";
+            lblPhone.Text = "[?????]";
+            lblCountry.Text = "[?????]";
 
-        private async void btnSave_Click(object sender, EventArgs e)
-        {
-            string selectedClass = cbLicenseClasses.SelectedItem.ToString();
-
-            // فحص القيد: عدم السماح بإضافة طلب جديد لنفس الشخص لنفس الفئة بطلب نشط
-            if (_mode == Mode.AddNew)
-            {
-                var allApps = await _localLicenseService.GetAllLocalLicenseAsync();
-                bool hasActiveApplication = allApps.Any(a => a.NationalNo == _applicationDto.NationalNo &&
-                                                              a.ClassName == selectedClass &&
-                                                              a.Status == "New");
-
-                if (hasActiveApplication)
-                {
-                    MessageBox.Show("Choose another License Class, the selected Person already has an active application for the selected class!",
-                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-            }
-
-            _applicationDto.ClassName = selectedClass;
-            _applicationDto.ApplicationDate = DateTime.Now;
-            _applicationDto.Status = "New";
+            llEditPersonInfo.Enabled = false;
 
             if (_mode == Mode.AddNew)
             {
-                int newAppId = await _localLicenseService.AddLocalLicenseAsync(_applicationDto);
-
-                if (newAppId != -1)
-                {
-                    lblLocalLicenseAppID.Text = newAppId.ToString();
-                    _mode = Mode.Update;
-                    lblTitle.Text = "Update Local Driving License Application";
-                    MessageBox.Show("Data Saved Successfully.", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Error: Data was not saved successfully.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                btnNext.Enabled = false;
+                btnSave.Enabled = false;
+                tpApplicationInfo.Enabled = false;
             }
         }
 
-        // 1. حدث البحث عن شخص باستخدام زر البحث
         private async void btnFindPerson_Click(object sender, EventArgs e)
         {
             string filterValue = txtFilterValue.Text.Trim();
@@ -174,55 +202,117 @@ namespace UI.WinForms.Forms.Application
                 return;
             }
 
-            // هنا استدعاء خدمة البحث عن الشخص من PersonService (حسب طريقة البحث بالـ ID أو الرقم الوطني)
-            // var person = await _personService.GetPersonByNationalNoAsync(filterValue);
-
-            /* مثال توضيحي بعد جلب بيانات الشخص:
-            if (person != null)
+            if (cbFilterBy.SelectedItem.ToString() == "Person ID")
             {
-                _selectedPersonId = person.PersonID;
-                _loadPersonData(person);
+                int personId;
+                if (!int.TryParse(filterValue, out personId))
+                {
+                    MessageBox.Show("Person ID must be a number!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                await _loadPersonByIdAsync(personId);
             }
             else
             {
-                MessageBox.Show("No Person Found with this criteria!", "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                _resetPersonInfo();
+                await _loadPersonByNationalNoAsync(filterValue);
             }
-            */
         }
 
-        // 2. حدث إضافة شخص جديد عند الضغط على زر (+)
-        private void btnAddPerson_Click(object sender, EventArgs e)
+        private async void btnAddPerson_Click(object sender, EventArgs e)
         {
-            // فتح شاشة إضافة شخص جديد
-            // var frm = new AddEditPerson(-1);
-            // frm.ShowDialog();
+            var frm = new UI.WinForms.Forms.Person.AddEditForm(_personService, -1);
+            frm.ShowDialog();
 
-            // إذا عاد الشباك بـ PersonID جديد:
-            // if (frm.PersonID != -1)
-            // {
-            //     _selectedPersonId = frm.PersonID;
-            //     await _loadPersonDataByIdAsync(_selectedPersonId);
-            // }
+            if (frm.SavedPersonId > 0)
+            {
+                await _loadPersonByIdAsync(frm.SavedPersonId);
+            }
         }
 
         private async void llEditPersonInfo_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            //if (_selectedPersonId == -1)
-            //{
-            //    MessageBox.Show("Please select a person first!", "No Person Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    return;
-            //}
+            if (_selectedPersonId == -1)
+            {
+                MessageBox.Show("Please select a person first!", "No Person Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
-            //// فتح شاشة تعديل الشخص المستقلة المجهزة عندك سلفاً
-            //var frm = new UI.WinForms.Forms.Person.AddEdit(_personService, _selectedPersonId);
-            //frm.ShowDialog();
+            var frm = new UI.WinForms.Forms.Person.AddEditForm(_personService, _selectedPersonId);
+            frm.ShowDialog();
 
-            //// إعادة جلب بيانات الشخص المختار حالياً لتحديث الـ Labels إذا جرى تعديلها
-            //await _loadPersonDataByIdAsync(_selectedPersonId);
+            await _loadPersonByIdAsync(_selectedPersonId);
         }
 
+        private void btnNext_Click(object sender, EventArgs e)
+        {
+            if (_selectedPersonId == -1)
+            {
+                MessageBox.Show("Please Select a Person First!", "Select Person", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
+            tcApplicationInfo.SelectedTab = tpApplicationInfo;
+        }
+
+        private async void btnSave_Click(object sender, EventArgs e)
+        {
+            if (_selectedPersonId == -1)
+            {
+                MessageBox.Show("Please Select a Person First!", "Select Person", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (cbLicenseClasses.SelectedItem == null)
+            {
+                MessageBox.Show("Please Select a License Class!", "Select License Class", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (_mode != Mode.AddNew)
+                return;
+
+            string selectedClass = cbLicenseClasses.SelectedItem.ToString();
+
+            var allApplications = await _localLicenseService.GetAllLocalLicenseAsync();
+            bool hasActiveApplication = allApplications.Any(a => a.NationalNo == lblNationalNo.Text &&
+                                                                 a.ClassName == selectedClass &&
+                                                                 a.Status == "New");
+
+            if (hasActiveApplication)
+            {
+                MessageBox.Show("Choose another License Class, the selected Person already has an active application for the selected class!",
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            _applicationDto.ApplicantPersonID = _selectedPersonId;
+            _applicationDto.LicenseClassID = cbLicenseClasses.SelectedIndex + 1;
+            _applicationDto.CreatedByUserID = CurrentUserSession.IsLoggedIn ? CurrentUserSession.CurrentUser.Id : 0;
+            _applicationDto.ClassName = selectedClass;
+            _applicationDto.NationalNo = lblNationalNo.Text;
+            _applicationDto.FullName = lblFullName.Text;
+            _applicationDto.ApplicationDate = DateTime.Now;
+            _applicationDto.Status = "New";
+
+            int newAppId = await _localLicenseService.AddLocalLicenseAsync(_applicationDto);
+
+            if (newAppId < 1)
+            {
+                MessageBox.Show("Error: Data was not saved successfully.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            _localLicenseAppId = newAppId;
+            _applicationDto.LocalDrivingLicenseApplicationID = newAppId;
+            _mode = Mode.Update;
+
+            lblLocalLicenseAppID.Text = newAppId.ToString();
+            lblTitle.Text = "Update Local Driving License Application";
+            this.Text = "Update Local Driving License Application";
+
+            MessageBox.Show("Data Saved Successfully.", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
 
         private void btnClose_Click(object sender, EventArgs e)
         {

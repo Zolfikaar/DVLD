@@ -14,12 +14,14 @@ namespace UI.WinForms
         private readonly UserService _userService;
         private readonly ApplicationTypeService _applicationTypeService;
         private readonly TestTypeService _testTypeService;
+        private readonly LocalLicenseService _localLicenseService;
 
         public bool IsLogout { get; private set; }
 
-        public MainForm(PersonService personService, UserService userService, ApplicationTypeService applicationTypeService, TestTypeService testTypeService)
+        public MainForm(PersonService personService, UserService userService, ApplicationTypeService applicationTypeService, TestTypeService testTypeService, LocalLicenseService localLicenseService)
         {
             InitializeComponent();
+            _localLicenseService = localLicenseService;
             _personService = personService;
             _userService = userService;
             _applicationTypeService = applicationTypeService;
@@ -95,7 +97,7 @@ namespace UI.WinForms
 
         private void localDrivingLicenseApplicationsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ManageApplications_LocalLicense frm = new ManageApplications_LocalLicense();
+            ManageApplications_LocalLicense frm = new ManageApplications_LocalLicense(_localLicenseService, _personService);
             frm.ShowDialog();
         }
 

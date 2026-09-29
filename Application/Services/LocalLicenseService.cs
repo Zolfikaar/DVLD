@@ -59,6 +59,9 @@ namespace Application.Services
             var entity = new LocalLicense
             {
                 LocalDrivingLicenseApplicationID = localLicenseDto.LocalDrivingLicenseApplicationID,
+                ApplicantPersonID = localLicenseDto.ApplicantPersonID,
+                LicenseClassID = localLicenseDto.LicenseClassID,
+                CreatedByUserID = localLicenseDto.CreatedByUserID,
                 ClassName = localLicenseDto.ClassName,
                 NationalNo = localLicenseDto.NationalNo,
                 FullName = localLicenseDto.FullName,
