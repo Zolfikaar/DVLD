@@ -11,6 +11,16 @@ namespace UI.WinForms
             get { return CurrentUser != null; }
         }
 
+        public static int CurrentUserId
+        {
+            get { return CurrentUser != null ? CurrentUser.Id : 0; }
+        }
+
+        public static string CurrentUserName
+        {
+            get { return CurrentUser != null ? CurrentUser.Username : "Unknown"; }
+        }
+
         public static void SignIn(UserDto user)
         {
             CurrentUser = user;

@@ -38,5 +38,15 @@ namespace DependencyInjection
             ILocalLicenseRepository localLicenseRepo = new LocalLicenseRepository();
             return new LocalLicenseService(localLicenseRepo);
         }
+
+        public static TestAppointmentService CreateTestAppointmentService()
+        {
+            return new TestAppointmentService(new TestAppointmentRepository(), new LocalLicenseRepository());
+        }
+
+        public static LicenseService CreateLicenseService()
+        {
+            return new LicenseService(new LicenseRepository(), new LocalLicenseRepository());
+        }
     }
 }

@@ -104,9 +104,12 @@ namespace UI.WinForms.Forms.Application
 
             lblLocalLicenseAppID.Text = _applicationDto.LocalDrivingLicenseApplicationID.ToString();
             lblApplicationDate.Text = _applicationDto.ApplicationDate.ToString("dd/MM/yyyy");
-            cbLicenseClasses.SelectedItem = _applicationDto.ClassName;
+            lblApplicationFees.Text = _applicationDto.PaidFees.ToString("0.##");
+            lblCreatedBy.Text = _applicationDto.CreatedByUserName;
+            if (_applicationDto.LicenseClassID >= 1 && _applicationDto.LicenseClassID <= cbLicenseClasses.Items.Count)
+                cbLicenseClasses.SelectedIndex = _applicationDto.LicenseClassID - 1;
 
-            await _loadPersonByNationalNoAsync(_applicationDto.NationalNo);
+            await _loadPersonByIdAsync(_applicationDto.ApplicantPersonID);
         }
 
         private async Task _loadPersonByIdAsync(int personId)
@@ -269,49 +272,70 @@ namespace UI.WinForms.Forms.Application
                 return;
             }
 
-            if (_mode != Mode.AddNew)
-                return;
-
             string selectedClass = cbLicenseClasses.SelectedItem.ToString();
+            int licenseClassId = cbLicenseClasses.SelectedIndex + 1;
 
-            var allApplications = await _localLicenseService.GetAllLocalLicenseAsync();
-            bool hasActiveApplication = allApplications.Any(a => a.NationalNo == lblNationalNo.Text &&
-                                                                 a.ClassName == selectedClass &&
-                                                                 a.Status == "New");
-
-            if (hasActiveApplication)
+            try
             {
-                MessageBox.Show("Choose another License Class, the selected Person already has an active application for the selected class!",
-                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                int excludedAppId = _mode == Mode.Update ? _localLicenseAppId : -1;
+                if (await _localLicenseService.HasActiveApplicationAsync(_selectedPersonId, licenseClassId, excludedAppId))
+                {
+                    MessageBox.Show("Choose another License Class, the selected Person already has an active application for the selected class!",
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (_mode == Mode.Update)
+                {
+                    if (await _localLicenseService.UpdateLocalLicenseAsync(_localLicenseAppId, licenseClassId))
+                    {
+                        _applicationDto.LicenseClassID = licenseClassId;
+                        _applicationDto.ClassName = selectedClass;
+                        MessageBox.Show("Data Saved Successfully.", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error: Data was not saved successfully.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    return;
+                }
+
+                _applicationDto.ApplicantPersonID = _selectedPersonId;
+                _applicationDto.LicenseClassID = licenseClassId;
+                _applicationDto.CreatedByUserID = CurrentUserSession.CurrentUserId;
+                _applicationDto.ClassName = selectedClass;
+                _applicationDto.NationalNo = lblNationalNo.Text;
+                _applicationDto.FullName = lblFullName.Text;
+                _applicationDto.ApplicationDate = DateTime.Now;
+                _applicationDto.Status = "New";
+
+                int newAppId = await _localLicenseService.AddLocalLicenseAsync(_applicationDto);
+
+                if (newAppId < 1)
+                {
+                    MessageBox.Show("Error: Data was not saved successfully.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                _localLicenseAppId = newAppId;
+                _applicationDto.LocalDrivingLicenseApplicationID = newAppId;
+                _mode = Mode.Update;
+
+                lblLocalLicenseAppID.Text = newAppId.ToString();
+                lblTitle.Text = "Update Local Driving License Application";
+                this.Text = "Update Local Driving License Application";
+
+                MessageBox.Show("Data Saved Successfully.", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-
-            _applicationDto.ApplicantPersonID = _selectedPersonId;
-            _applicationDto.LicenseClassID = cbLicenseClasses.SelectedIndex + 1;
-            _applicationDto.CreatedByUserID = CurrentUserSession.IsLoggedIn ? CurrentUserSession.CurrentUser.Id : 0;
-            _applicationDto.ClassName = selectedClass;
-            _applicationDto.NationalNo = lblNationalNo.Text;
-            _applicationDto.FullName = lblFullName.Text;
-            _applicationDto.ApplicationDate = DateTime.Now;
-            _applicationDto.Status = "New";
-
-            int newAppId = await _localLicenseService.AddLocalLicenseAsync(_applicationDto);
-
-            if (newAppId < 1)
+            catch (InvalidOperationException ex)
             {
-                MessageBox.Show("Error: Data was not saved successfully.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                MessageBox.Show(ex.Message, "Not Allowed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-
-            _localLicenseAppId = newAppId;
-            _applicationDto.LocalDrivingLicenseApplicationID = newAppId;
-            _mode = Mode.Update;
-
-            lblLocalLicenseAppID.Text = newAppId.ToString();
-            lblTitle.Text = "Update Local Driving License Application";
-            this.Text = "Update Local Driving License Application";
-
-            MessageBox.Show("Data Saved Successfully.", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error saving the application: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnClose_Click(object sender, EventArgs e)

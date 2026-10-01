@@ -1,15 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System;
 
 namespace Application.DTOs
 {
     public class LocalLicenseDto
     {
+        public const int StatusNew = 1;
+        public const int StatusCancelled = 2;
+        public const int StatusCompleted = 3;
+
         public int LocalDrivingLicenseApplicationID { get; set; }
+        public int ApplicationID { get; set; }
         public int ApplicantPersonID { get; set; }
         public int LicenseClassID { get; set; }
         public int CreatedByUserID { get; set; }
+        public string CreatedByUserName { get; set; } = string.Empty;
+        public string ApplicationTypeTitle { get; set; } = string.Empty;
+        public int ApplicationStatus { get; set; }
+        public decimal PaidFees { get; set; }
+        public DateTime LastStatusDate { get; set; }
+        public int LicenseID { get; set; }
         public string ClassName { get; set; } = string.Empty;
         public string NationalNo { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Application.DTOs;
 using Application.Services;
+using UI.WinForms.Forms.License;
+using UI.WinForms.Forms.Test;
 
 namespace UI.WinForms.Forms.Application
 {
@@ -13,13 +15,23 @@ namespace UI.WinForms.Forms.Application
     {
         private readonly LocalLicenseService _localLicenseService;
         private readonly PersonService _personService;
+        private readonly TestAppointmentService _testAppointmentService;
+        private readonly TestTypeService _testTypeService;
+        private readonly ApplicationTypeService _applicationTypeService;
+        private readonly LicenseService _licenseService;
         private List<LocalLicenseDto> _allApplications = new List<LocalLicenseDto>();
 
-        public ManageApplications_LocalLicense(LocalLicenseService localLicenseService, PersonService personService)
+        public ManageApplications_LocalLicense(LocalLicenseService localLicenseService, PersonService personService,
+            TestAppointmentService testAppointmentService, TestTypeService testTypeService,
+            ApplicationTypeService applicationTypeService, LicenseService licenseService)
         {
             InitializeComponent();
             _localLicenseService = localLicenseService;
             _personService = personService;
+            _testAppointmentService = testAppointmentService;
+            _testTypeService = testTypeService;
+            _applicationTypeService = applicationTypeService;
+            _licenseService = licenseService;
         }
 
         private async void ManageApplications_LocalLicense_Load(object sender, EventArgs e)
@@ -170,7 +182,7 @@ namespace UI.WinForms.Forms.Application
             if (dgvLocalLicenses.CurrentRow == null) return;
 
             int selectedAppId = (int)dgvLocalLicenses.CurrentRow.Cells["LocalDrivingLicenseApplicationID"].Value;
-            var frm = new LocalLicense_ApplicationDetails(selectedAppId);
+            var frm = new LocalLicense_ApplicationDetails(selectedAppId, _localLicenseService, _personService, _licenseService);
             frm.ShowDialog();
         }
 
@@ -190,10 +202,12 @@ namespace UI.WinForms.Forms.Application
 
             int selectedAppId = (int)dgvLocalLicenses.CurrentRow.Cells["LocalDrivingLicenseApplicationID"].Value;
 
-            if (MessageBox.Show("Are you sure you want to delete this application?", "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show("Are you sure you want to delete this application?", "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+
+            try
             {
-                bool deleted = await _localLicenseService.DeleteLocalLicenseAsync(selectedAppId);
-                if (deleted)
+                if (await _localLicenseService.DeleteLocalLicenseAsync(selectedAppId))
                 {
                     MessageBox.Show("Application Deleted Successfully.", "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     await _loadApplicationsDataAsync();
@@ -203,6 +217,133 @@ namespace UI.WinForms.Forms.Application
                     MessageBox.Show("Error: Application could not be deleted.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show(ex.Message, "Cannot Delete", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error deleting the application: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private LocalLicenseDto _selectedApplication()
+        {
+            if (dgvLocalLicenses.CurrentRow == null)
+                return null;
+
+            int selectedAppId = (int)dgvLocalLicenses.CurrentRow.Cells["LocalDrivingLicenseApplicationID"].Value;
+            return _allApplications.FirstOrDefault(a => a.LocalDrivingLicenseApplicationID == selectedAppId);
+        }
+
+        private void cmsLocalLicenses_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            LocalLicenseDto application = _selectedApplication();
+            if (application == null)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            bool isNew = application.ApplicationStatus == LocalLicenseDto.StatusNew;
+            bool hasLicense = application.LicenseID > 0;
+            int passed = application.PassedTestCount;
+
+            editApplicationToolStripMenuItem.Enabled = isNew && passed == 0;
+            deleteApplicationToolStripMenuItem.Enabled = isNew && passed == 0;
+            cancelApplicationToolStripMenuItem.Enabled = isNew;
+
+            scheduleTestsToolStripMenuItem.Enabled = isNew && passed < 3;
+            scheduleVisionTestToolStripMenuItem.Enabled = isNew && passed == 0;
+            scheduleWrittenTestToolStripMenuItem.Enabled = isNew && passed == 1;
+            scheduleStreetTestToolStripMenuItem.Enabled = isNew && passed == 2;
+
+            issueDrivingLicenseFirstTimeToolStripMenuItem.Enabled = isNew && passed == 3 && !hasLicense;
+            showLicenseToolStripMenuItem.Enabled = hasLicense;
+        }
+
+        private async void cancelApplicationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LocalLicenseDto application = _selectedApplication();
+            if (application == null)
+                return;
+
+            if (MessageBox.Show("Are you sure you want to cancel application #" + application.LocalDrivingLicenseApplicationID + "?",
+                    "Confirm Cancel", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+
+            try
+            {
+                if (await _localLicenseService.CancelLocalLicenseAsync(application.LocalDrivingLicenseApplicationID))
+                {
+                    MessageBox.Show("Application Cancelled Successfully.", "Cancelled", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    await _loadApplicationsDataAsync();
+                }
+                else
+                {
+                    MessageBox.Show("The application could not be cancelled. Only applications with status 'New' can be cancelled.",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error cancelling the application: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async Task _openTestAppointmentsAsync(int testTypeId)
+        {
+            LocalLicenseDto application = _selectedApplication();
+            if (application == null)
+                return;
+
+            new ManageTestAppointments(application.LocalDrivingLicenseApplicationID, testTypeId, _localLicenseService,
+                _testAppointmentService, _testTypeService, _applicationTypeService).ShowDialog();
+
+            await _loadApplicationsDataAsync();
+        }
+
+        private async void scheduleVisionTestToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await _openTestAppointmentsAsync(1);
+        }
+
+        private async void scheduleWrittenTestToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await _openTestAppointmentsAsync(2);
+        }
+
+        private async void scheduleStreetTestToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            await _openTestAppointmentsAsync(3);
+        }
+
+        private async void issueDrivingLicenseFirstTimeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LocalLicenseDto application = _selectedApplication();
+            if (application == null)
+                return;
+
+            new IssueLicenseFirstTime(application.LocalDrivingLicenseApplicationID, _localLicenseService, _licenseService).ShowDialog();
+            await _loadApplicationsDataAsync();
+        }
+
+        private void showLicenseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LocalLicenseDto application = _selectedApplication();
+            if (application == null || application.LicenseID <= 0)
+                return;
+
+            new LicenseDetails(_licenseService, application.LicenseID).ShowDialog();
+        }
+
+        private void showPersonLicenseHistoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LocalLicenseDto application = _selectedApplication();
+            if (application == null)
+                return;
+
+            new LicenseHistory(_licenseService, _personService, application.ApplicantPersonID).ShowDialog();
         }
 
         private void btnClose_Click(object sender, EventArgs e)

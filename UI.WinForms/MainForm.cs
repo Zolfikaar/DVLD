@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using Application.Services;
 using UI.WinForms.Forms;
 using UI.WinForms.Forms.Application;
+using UI.WinForms.Forms.License;
 using UI.WinForms.Forms.User;
 using UI.WinForms.Forms.Test;
 
@@ -15,12 +16,17 @@ namespace UI.WinForms
         private readonly ApplicationTypeService _applicationTypeService;
         private readonly TestTypeService _testTypeService;
         private readonly LocalLicenseService _localLicenseService;
+        private readonly TestAppointmentService _testAppointmentService;
+        private readonly LicenseService _licenseService;
 
         public bool IsLogout { get; private set; }
 
-        public MainForm(PersonService personService, UserService userService, ApplicationTypeService applicationTypeService, TestTypeService testTypeService, LocalLicenseService localLicenseService)
+        public MainForm(PersonService personService, UserService userService, ApplicationTypeService applicationTypeService, TestTypeService testTypeService, LocalLicenseService localLicenseService,
+            TestAppointmentService testAppointmentService, LicenseService licenseService)
         {
             InitializeComponent();
+            _testAppointmentService = testAppointmentService;
+            _licenseService = licenseService;
             _localLicenseService = localLicenseService;
             _personService = personService;
             _userService = userService;
@@ -97,20 +103,55 @@ namespace UI.WinForms
 
         private void localDrivingLicenseApplicationsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ManageApplications_LocalLicense frm = new ManageApplications_LocalLicense(_localLicenseService, _personService);
+            ManageApplications_LocalLicense frm = _createLocalLicenseApplicationsForm();
             frm.ShowDialog();
         }
 
         private void internationalDrivingLicenseApplicationsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ManageApplications_InternationalLicense frm = new ManageApplications_InternationalLicense();
+            ManageApplications_InternationalLicense frm = new ManageApplications_InternationalLicense(_licenseService, _personService, _applicationTypeService);
             frm.ShowDialog();
         }
 
         private void localLicenseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ManageApplications_LocalLicense frm = new ManageApplications_LocalLicense(_localLicenseService, _personService);
-            frm.ShowDialog();
+            new AddEdit_LocalLicenseApplication(_localLicenseService, -1, _personService).ShowDialog();
+        }
+
+        private ManageApplications_LocalLicense _createLocalLicenseApplicationsForm()
+        {
+            return new ManageApplications_LocalLicense(_localLicenseService, _personService, _testAppointmentService,
+                _testTypeService, _applicationTypeService, _licenseService);
+        }
+
+        private void internationalLicenseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new IssueInternationalLicense(_licenseService, _personService, _applicationTypeService).ShowDialog();
+        }
+
+        private void renewDrivingLicenseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new RenewLicense(_licenseService, _personService, _applicationTypeService).ShowDialog();
+        }
+
+        private void replacmentForLostOrDamagedLicenseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new ReplaceLicense(_licenseService, _personService, _applicationTypeService).ShowDialog();
+        }
+
+        private void manageDetainLicenseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new ManageDetainedLicenses(_licenseService, _personService, _applicationTypeService).ShowDialog();
+        }
+
+        private void detainLicenseToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            new DetainLicense(_licenseService, _personService).ShowDialog();
+        }
+
+        private void releaseDetainLicenseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new ReleaseDetainedLicense(_licenseService, _personService, _applicationTypeService).ShowDialog();
         }
     }
 }
